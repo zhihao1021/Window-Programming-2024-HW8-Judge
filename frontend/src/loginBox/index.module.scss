@@ -1,0 +1,89 @@
+.loginBox {
+    width: calc(min(28rem, 95vw) - 6rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 2rem 3rem;
+    border-radius: 1rem;
+    background-color: #FFF;
+    text-align: center;
+
+    h1 {
+        margin: 0;
+    }
+
+    .inputBox {
+        display: flex;
+        align-items: center;
+        font-size: 2.5rem;
+        gap: 1rem;
+        color: #888;
+
+        span {
+            transition: color 0.3s;
+        }
+
+        input {
+            width: 0;
+            flex: 1;
+            font-size: 0.8em;
+            outline: none;
+            color: inherit;
+            background-color: transparent;
+            border: none;
+            border-bottom: 0.1rem solid #888;
+            transition: color 0.3s, border-color 0.3s;
+        }
+    }
+
+    .inputBox[data-empty=true] {
+        color: #E44;
+
+        input {
+            border-bottom-color: #E44;
+        }
+    }
+
+    .inputBox:has(input:focus) {
+        color: #000;
+
+        input {
+            border-bottom-color: #000;
+        }
+    }
+
+    .loginFailed {
+        color: #FFF;
+        background-color: #F33;
+        padding: 0.3rem;
+        border-radius: 0.2rem;
+    }
+
+    .login {
+        font-size: 1.6rem;
+        padding: 0.6rem 0;
+        border-radius: 0.5rem;
+        width: 100%;
+        color: #EEE;
+        background-color: #2A1;
+        cursor: pointer;
+        user-select: none;
+        box-shadow: 0.1rem 0.2rem 0.2rem -0.2rem #000;
+        transition:
+            color 0.3s,
+            background-color 0.3s,
+            box-shadow 0.3s,
+            transform 0.3s;
+    }
+
+    .login:not(:disabled):hover {
+        transform: translateY(-0.1rem);
+    }
+
+    .login:disabled {
+        color: #CCC;
+        background-color: #888;
+        pointer-events: none;
+        box-shadow: 0.1rem 0.2rem 0.2rem -0.2rem #0000;
+    }
+}
