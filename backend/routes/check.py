@@ -108,12 +108,10 @@ def check(
         return CheckResult(success=True)
     except ProgrammingError:
         return CheckResult(success=False)
-    except DatabaseError or OperationalError as exc:
+    except Exception as exc:
         if len(exc.args) >= 2 and type(exc.args[1]) == str:
             if "incorrect syntax" in exc.args[1].lower():
                 return CheckResult(success=False)
-        dealing_exception(user=user, query_strings=query_strings)
-    except:
         dealing_exception(user=user, query_strings=query_strings)
 
 
