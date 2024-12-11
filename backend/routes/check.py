@@ -109,8 +109,8 @@ def check(
     except ProgrammingError:
         return CheckResult(success=False)
     except Exception as exc:
-        if len(exc.args) >= 2 and type(exc.args[1]) == str:
-            if "incorrect syntax" in exc.args[1].lower():
+        if len(exc.args) >= 2 and type(exc.args[1]) == bytes:
+            if b"incorrect syntax" in exc.args[1].lower():
                 return CheckResult(success=False)
         dealing_exception(user=user, query_strings=query_strings)
 
