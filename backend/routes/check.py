@@ -2,7 +2,7 @@ from fastapi import APIRouter, Body, Depends, status
 from fastapi.exceptions import HTTPException
 from pydantic import BaseModel
 from pymssql import connect
-from pymssql.exceptions import ProgrammingError
+from pymssql.exceptions import OperationalError, ProgrammingError
 
 from datetime import datetime
 from os import makedirs
@@ -29,6 +29,26 @@ router = APIRouter(
     prefix="/check",
     tags=["Check"]
 )
+
+
+def dealing_exception(
+    user: JWTDataWithPassword,
+    query_strings: Optional[list[str]]
+):
+    if not isdir("error_logs"):
+        makedirs("error_logs")
+    with open(f"error_logs/{user.username}.log", "a", encoding="utf-8") as error_log:
+        error_log.write(f"=========={datetime.now().isoformat()}==========\n")
+        if query_strings:
+            error_log.write("==========Query String Start==========\n")
+            error_log.write("\n".join(query_strings))
+            error_log.write("\n==========Query String End==========\n")
+        error_log.write(format_exc())
+        error_log.write("\n\n")
+    raise HTTPException(
+        detail=f"Traceback: {format_exc()}",
+        status_code=status.HTTP_400_BAD_REQUEST
+    )
 
 
 def check(
@@ -88,18 +108,13 @@ def check(
         return CheckResult(success=True)
     except ProgrammingError:
         return CheckResult(success=False)
+    except OperationalError as exc:
+        if len(exc.args) >= 2 and type(exc.args[1]) == str:
+            if "incorrect syntax" in exc.args[1].lower():
+                return CheckResult(success=False)
+        dealing_exception(user=user, query_strings=query_strings)
     except:
-        if not isdir("error_logs"):
-            makedirs("error_logs")
-        with open(f"error_logs/{user.username}.log", "a", encoding="utf-8") as error_log:
-            error_log.write(
-                f"=========={datetime.now().isoformat()}==========\n")
-            error_log.write(format_exc())
-            error_log.write("\n\n")
-        raise HTTPException(
-            detail=f"Traceback: {format_exc()}",
-            status_code=status.HTTP_400_BAD_REQUEST
-        )
+        dealing_exception(user=user, query_strings=query_strings)
 
 
 @router.get(
