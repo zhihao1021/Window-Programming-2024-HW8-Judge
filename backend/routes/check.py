@@ -2,7 +2,7 @@ from fastapi import APIRouter, Body, Depends, status
 from fastapi.exceptions import HTTPException
 from pydantic import BaseModel
 from pymssql import connect
-from pymssql.exceptions import OperationalError, ProgrammingError
+from pymssql.exceptions import DatabaseError, OperationalError, ProgrammingError
 
 from datetime import datetime
 from os import makedirs
@@ -108,7 +108,7 @@ def check(
         return CheckResult(success=True)
     except ProgrammingError:
         return CheckResult(success=False)
-    except OperationalError as exc:
+    except DatabaseError or OperationalError as exc:
         if len(exc.args) >= 2 and type(exc.args[1]) == str:
             if "incorrect syntax" in exc.args[1].lower():
                 return CheckResult(success=False)
