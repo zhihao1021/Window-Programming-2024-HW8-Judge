@@ -33,7 +33,10 @@ export default function App(): ReactElement {
             userData === null ? <LoginBox
                 setLoading={setLoading}
                 setToken={setToken}
-            /> : <Content />
+            /> : <Content
+                userData={userData}
+                setLoading={setLoading}
+            />
         }
     </div>
 }

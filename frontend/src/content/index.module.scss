@@ -3,6 +3,37 @@
     width: min(95vw, 100vh);
     overflow-y: auto;
 
+    .topBar {
+        display: flex;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        align-items: center;
+        gap: 1rem;
+        color: #FFF;
+        border: 0.1rem solid #FFF;
+        font-size: 1.5rem;
+
+        .resetStatus {
+            margin-left: auto;
+            font-size: 0.8em;
+        }
+
+        button {
+            font-size: 0.75em;
+            height: 2.5rem;
+            line-height: 2.5rem;
+            padding: 0 1rem;
+            border-radius: 0.5rem;
+            color: #FFF;
+            background-color: #888;
+            transition: color 0.3s, background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #F00;
+        }
+    }
+
     .task {
         display: flex;
         margin-top: 1rem;
@@ -100,9 +131,5 @@
                 }
             }
         }
-    }
-
-    .task:first-child {
-        margin: 0;
     }
 }

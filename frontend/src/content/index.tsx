@@ -1,15 +1,40 @@
-import { ReactElement, useCallback, useEffect, useState } from "react";
+import axios from "axios";
+import { Dispatch, ReactElement, SetStateAction, useCallback, useEffect, useState } from "react";
+
+import JWTData from "schemas/jwtData";
 
 import styles from "./index.module.scss";
-import axios from "axios";
 
-export default function Content(): ReactElement {
+type propsType = Readonly<{
+    userData: JWTData,
+    setLoading: Dispatch<SetStateAction<boolean>>
+}>;
+
+export default function Content(props: propsType): ReactElement {
+    const {
+        userData,
+        setLoading
+    } = props;
+
     const [status, setStatus] = useState<Array<boolean | undefined>>([]);
+    const [resetStatus, setResetStatus] = useState<boolean | undefined>(undefined);
     const [queryStrings, setQueryStrings] = useState<Array<string | undefined>>([
         undefined,
         undefined,
         undefined
     ]);
+
+    const resetDB = useCallback(() => {
+        setLoading(true);
+        axios.put("/reset").then(response => {
+            const data = response.data as {
+                success: boolean
+            };
+            setResetStatus(data.success);
+        }).catch(() => {
+            setResetStatus(false);
+        }).finally(() => setLoading(false));
+    }, [setLoading]);
 
     const updateStatus = useCallback(() => {
         axios.get("/check").then(response => {
@@ -44,6 +69,15 @@ export default function Content(): ReactElement {
     }, [updateStatus]);
 
     return <div className={styles.content}>
+        <div className={styles.topBar}>
+            <span className="ms">account_circle</span>
+            <div>{userData.username.toUpperCase()}</div>
+            <div className={styles.resetStatus}>
+                {resetStatus === undefined ? "" :
+                    resetStatus ? "Reset success!" : "Reset failed."}
+            </div>
+            <button onClick={resetDB}>Reset DB</button>
+        </div>
         {
             Array.from(Array(4)).map((_, index) => <div
                 key={index}
