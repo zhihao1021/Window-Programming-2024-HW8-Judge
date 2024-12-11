@@ -3,11 +3,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from uvicorn import Config, Server
 
 from config import HOST, PORT
-from routes import auth_router, check_router
+from routes import (
+    auth_router,
+    check_router,
+    reset_router
+)
 
 app = FastAPI()
 app.include_router(auth_router)
 app.include_router(check_router)
+app.include_router(reset_router)
 
 origins = [
     "http://localhost:3000",

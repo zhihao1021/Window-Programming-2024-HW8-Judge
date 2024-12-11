@@ -18,6 +18,6 @@ def login(
     password: str = Body(embed=True)
 ) -> JWT:
     return JWTManager.login(
-        sid=sid.lower(),
-        password=password.lower()
+        sid=sid,
+        password=password
     )

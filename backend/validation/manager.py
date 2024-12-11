@@ -42,6 +42,8 @@ class JWTManager:
         sid: str,
         password: str
     ) -> JWT:
+        sid = sid.lower()
+        password = password.lower()
         if password != LOGIN_DATA.get(sid):
             raise AUTHORIZE_FAILED
 
