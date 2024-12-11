@@ -92,7 +92,8 @@ def check(
         if not isdir("error_logs"):
             makedirs("error_logs")
         with open(f"error_logs/{user.username}.log", "a", encoding="utf-8") as error_log:
-            error_log.write(f"=========={datetime.now().isoformat()}==========\n")
+            error_log.write(
+                f"=========={datetime.now().isoformat()}==========\n")
             error_log.write(format_exc())
             error_log.write("\n\n")
         raise HTTPException(

@@ -7,7 +7,7 @@ from jwt.exceptions import (
 )
 
 from csv import reader
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta
 
 from config import JWT_KEY
 
@@ -17,6 +17,12 @@ from .exception import (
     INVALIDE_AUTHENTICATION_CREDENTIALS,
 )
 from .schemas import JWT, JWTData, JWTDataWithPassword
+
+try:
+    from datetime import UTC
+except ImportError:
+    from datetime import timezone
+    UTC = timezone.utc
 
 SECURITY = Security(HTTPBearer(
     scheme_name="JWT",
