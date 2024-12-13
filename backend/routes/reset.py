@@ -63,6 +63,7 @@ def reset(user: JWTDataWithPassword):
     cursor.execute(f"""
     USE [master]
     CREATE LOGIN [{username}] WITH PASSWORD=N'{password}', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+    GRANT VIEW ANY DEFINITION TO [{username}]
     DENY VIEW ANY DATABASE TO [{username}]
     """)
     cursor.execute(f"""
