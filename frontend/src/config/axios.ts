@@ -33,7 +33,15 @@ export function setRequestConfig() {
 export function setResponseConfig() {
     axios.interceptors.response.use(
         response => response,
-        (error) => {
+        (error: AxiosError) => {
+            const data = error.response?.data as {
+                detail: string
+            };
+            if (error.status === 401 && data && data.detail.includes("Invalid authentication credentials")) {
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("token_type");
+                window.location.reload();
+            }
             return dealError(error);
         }
     )
