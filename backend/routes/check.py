@@ -18,6 +18,8 @@ from validation import JWTDataWithPassword, JWTManager
 
 class CheckResult(BaseModel):
     success: bool = True
+    user_output: list[str] = []
+    correct_output: list[str] = []
 
 
 UserDepend = Annotated[
@@ -85,9 +87,7 @@ def check(
             OR table_name = 'Items'
         """)
         if cursor.fetchone()[0] != 3:
-            cursor.close()
-            conn.close()
-            return CheckResult(success=False)
+            return CheckResult(success=False, user_output=["Table not found!"])
 
         for i, testcase in enumerate(testcase_data.testcases):
             query_string = query_strings[i] if testcase_data.user_query_string \
@@ -99,20 +99,29 @@ def check(
             results = cursor.fetchall()
 
             if set(results) != set(testcase.results):
-                cursor.close()
-                conn.close()
-                return CheckResult(success=False)
+                return CheckResult(
+                    success=False,
+                    user_output=sorted(results),
+                    correct_output=sorted(testcase.results)
+                )
 
-        cursor.close()
-        conn.close()
         return CheckResult(success=True)
     except ProgrammingError:
-        return CheckResult(success=False)
+        return CheckResult(
+            success=False,
+            user_output=["Runtime error"]
+        )
     except Exception as exc:
         if len(exc.args) >= 2 and type(exc.args[1]) == bytes:
             if b"incorrect syntax" in exc.args[1].lower():
-                return CheckResult(success=False)
+                return CheckResult(
+                    success=False,
+                    user_output=["Your syntax is wrong"]
+                )
         dealing_exception(user=user, query_strings=query_strings)
+    finally:
+        cursor.close()
+        conn.close()
 
 
 @router.get(
