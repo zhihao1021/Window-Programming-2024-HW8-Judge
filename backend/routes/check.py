@@ -101,8 +101,8 @@ def check(
             if set(results) != set(testcase.results):
                 return CheckResult(
                     success=False,
-                    user_output=sorted(results),
-                    correct_output=sorted(testcase.results)
+                    user_output=map(str, sorted(results)),
+                    correct_output=map(str, sorted(testcase.results))
                 )
 
         return CheckResult(success=True)
